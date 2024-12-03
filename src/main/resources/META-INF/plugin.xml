@@ -1,18 +1,37 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.prettycurious.stecdevopsclient</id>
-    <name>stec-devops-client</name>
-    <vendor>prettycurious</vendor>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.stec.stec-devops-client</id>
 
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Stec-devops-client</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="tianwenyuan@suitbim.com" url="https://www.verycurious.top">tianwenyuan</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description>Steam DevOps client is an idea plugin that automatically publishes scripts for auto deploy</description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.prettycurious.stecdevopsclient.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow id="Auto Deploy"
+                    anchor="bottom"
+                    factoryClass="com.stec.AutoDeployToolWindowFactory" />
+        <applicationConfigurable instance="com.stec.settings.DeploySettingsConfigurable" />
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.prettycurious.stecdevopsclient.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+    <actions>
+        <group id="AutoDeploy.Actions" text="Auto Deploy" description="Auto Deploy Actions" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last" />
+            <action id="RunAutoDeploy" class="com.stec.actions.RunAutoDeployAction" text="Run Auto Deploy" />
+        </group>
+    </actions>
 </idea-plugin>
