@@ -5,13 +5,13 @@ import com.intellij.openapi.components.*
 @State(name = "DeploySettingsState", storages = [Storage("DeploySettings.xml")])
 @Service
 class DeploySettingsState : PersistentStateComponent<DeploySettingsState> {
-    var host: String = "http://192.168.99.24:19999/stec-devops-promis"
-    var username: String = "admin"
-    var password: String = "Cjxx@2023"
-    var releasePath: String = "/data/apps_jar"
-    var environment: String = "dev"
-    var projectRootPath: String = "/Users/tianwenyuan/SUIT/Projects/stec-promis/stec-promis-parent"
-    var applications: List<String> = listOf("stec-promis-service", "stec-promis-web")
+    var host: String = ""
+    var username: String = ""
+    var password: String = ""
+    var releasePath: String = ""
+    var environment: String = ""
+    var projectRootPath: String = ""
+    var applications: List<String> = listOf("")
 
     // 这里的 `getState()` 返回当前状态
     override fun getState(): DeploySettingsState = this
