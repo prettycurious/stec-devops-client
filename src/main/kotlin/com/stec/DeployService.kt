@@ -35,9 +35,9 @@ class DeployService(private val consoleView: ConsoleView) {
 
         // 添加自定义拦截器来处理重定向响应
         client = OkHttpClient.Builder()
-            .connectTimeout(60, TimeUnit.SECONDS)  // 连接超时设置为 60 秒
-            .readTimeout(60, TimeUnit.SECONDS)     // 读取超时设置为 60 秒
-            .writeTimeout(60, TimeUnit.SECONDS)    // 写入超时设置为 60 秒
+            .connectTimeout(120, TimeUnit.SECONDS)  // 连接超时设置为 60 秒
+            .readTimeout(120, TimeUnit.SECONDS)     // 读取超时设置为 60 秒
+            .writeTimeout(120, TimeUnit.SECONDS)    // 写入超时设置为 60 秒
             .cookieJar(cookieJar)  // 将 MyCookieJar 添加到 OkHttpClient
             .addInterceptor(RedirectInterceptor())  // 添加重定向拦截器
             .followRedirects(false)  // 停止 OkHttp 自动处理重定向
