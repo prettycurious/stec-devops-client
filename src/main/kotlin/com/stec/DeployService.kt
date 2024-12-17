@@ -77,7 +77,7 @@ class DeployService(private val consoleView: ConsoleView) {
 
         // 获取 Cookie
         val cookies = response.headers("Set-Cookie")
-        consoleView.print("Login successful, cookies: $cookies\n", ConsoleViewContentType.NORMAL_OUTPUT)
+        consoleView.print("Login successful!\n", ConsoleViewContentType.NORMAL_OUTPUT)
 
         // 判断是否成功获取到 cookie
         if (cookies.isEmpty()) {
@@ -87,30 +87,6 @@ class DeployService(private val consoleView: ConsoleView) {
 
         // 返回第一个 Cookie（如果有多个）
         return cookies.firstOrNull() ?: ""
-    }
-
-    // 使用登录时获取的 Cookie 发起后续请求
-    fun fetchDataWithCookie(host: String, cookie: String): String {
-        consoleView.print("Fetching data with Cookie...\n", ConsoleViewContentType.NORMAL_OUTPUT)
-
-        // 创建请求，附带 Cookie
-        val request = Request.Builder()
-            .url("$host/data")
-            .addHeader("Cookie", cookie)  // 设置 Cookie 请求头
-            .build()
-
-        val response = client.newCall(request).execute()
-
-        if (!response.isSuccessful) {
-            consoleView.print("Request failed: ${response.message}\n", ConsoleViewContentType.ERROR_OUTPUT)
-            throw Exception("Request failed")
-        }
-
-        // 处理响应数据
-        val responseData = response.body?.string() ?: ""
-        consoleView.print("Fetched data: $responseData\n", ConsoleViewContentType.NORMAL_OUTPUT)
-
-        return responseData
     }
 
     // 停止应用方法

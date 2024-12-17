@@ -3,7 +3,7 @@ package com.stec
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
@@ -11,12 +11,10 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.stec.settings.DeploySettingsState
 import javax.swing.JButton
-import javax.swing.JProgressBar
 
 class AutoDeployToolWindowFactory : ToolWindowFactory {
     private val deployButton = JButton("Deploy")
     private val clearButton = JButton("Clear Console") // 手动清除按钮
-    private val progressBar = JProgressBar(0, 100) // 创建 JProgressBar，范围从 0 到 100
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val settings = DeploySettingsState.getInstance()
@@ -39,19 +37,19 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
                 cell(clearButton) // 添加手动清除按钮
                     .align(Align.CENTER)
             }
-            row("Progress:") {
-                cell(progressBar)
-                    .align(Align.FILL) // 使用新版对齐方式
-            }
             row("Log:") {
                 cell(consoleView.component)
-                    .align(Align.FILL) // 使用新版对齐方式
-            }
+                    .align(Align.FILL)
+            }.resizableRow() // 该行将变为可调整大小并占据所有垂直可用空间。对于多个可调整大小的行，额外的可用空间将在行之间平均分配。
         }
 
         // 为按钮添加点击事件
         deployButton.addActionListener {
-            startDeployment(settings, consoleView)
+            deployButton.isEnabled = false  // 禁用部署按钮，防止重复点击
+            ApplicationManager.getApplication().executeOnPooledThread {
+                startDeployment(settings, consoleView)
+                deployButton.isEnabled = true  // 部署完成后重新启用按钮
+            }
         }
 
         // 为清除按钮添加点击事件
@@ -69,14 +67,9 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
         // 清空控制台
         consoleView.clear()
 
-        // 设置进度条为不确定状态，表示正在执行
-        progressBar.isIndeterminate = true
         consoleView.print("Starting deployment...\n", ConsoleViewContentType.NORMAL_OUTPUT)
 
-        // 运行部署任务，并更新进度条
-        ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            performDeployment(settings, consoleView)
-        }, "Deploying Application", true, null)
+        performDeployment(settings, consoleView)
     }
 
     private fun performDeployment(settings: DeploySettingsState, consoleView: ConsoleView) {
@@ -95,13 +88,6 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
             consoleView.print("Deployment completed successfully!\n", ConsoleViewContentType.NORMAL_OUTPUT)
         } catch (e: Exception) {
             consoleView.print("Deployment failed: ${e.message}\n", ConsoleViewContentType.ERROR_OUTPUT)
-        } finally {
-            // 更新进度条为100%
-            progressBar.isIndeterminate = false
-            progressBar.value = 100
-
-            // 自动滚动到控制台的底部
-            consoleView.scrollTo(0) // 确保控制台滚动到最后一行
         }
     }
 }
