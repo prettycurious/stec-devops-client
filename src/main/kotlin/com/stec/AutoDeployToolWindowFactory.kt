@@ -9,6 +9,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.stec.validator.DeployConfigValidator
 import com.stec.settings.DeploySettingsState
 import javax.swing.JButton
 
@@ -46,9 +47,14 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
         // 为按钮添加点击事件
         deployButton.addActionListener {
             deployButton.isEnabled = false  // 禁用部署按钮，防止重复点击
-            ApplicationManager.getApplication().executeOnPooledThread {
-                startDeployment(settings, consoleView)
-                deployButton.isEnabled = true  // 部署完成后重新启用按钮
+            // 先进行配置验证
+            if (DeployConfigValidator.validateConfiguration(settings, consoleView)) {
+                ApplicationManager.getApplication().executeOnPooledThread {
+                    startDeployment(settings, consoleView)
+                    deployButton.isEnabled = true  // 部署完成后重新启用按钮
+                }
+            } else {
+                deployButton.isEnabled = true  // 配置验证失败，重新启用按钮
             }
         }
 

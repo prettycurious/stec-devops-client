@@ -1,17 +1,32 @@
 package com.stec.settings
 
 import com.intellij.openapi.components.*
+import com.stec.annotations.ValidNonBlankStringList
+import jakarta.validation.constraints.NotBlank
 
 @State(name = "DeploySettingsState", storages = [Storage("DeploySettings.xml")])
 @Service
 class DeploySettingsState : PersistentStateComponent<DeploySettingsState> {
+    @field:NotBlank(message = "host cannot be blank.")
     var host: String = ""
+
+    @field:NotBlank(message = "username cannot be blank.")
     var username: String = ""
+
+    @field:NotBlank(message = "password cannot be blank.")
     var password: String = ""
+
+    @field:NotBlank(message = "releasePath cannot be blank.")
     var releasePath: String = ""
+
+    @field:NotBlank(message = "environment cannot be blank.")
     var environment: String = ""
+
+    @field:NotBlank(message = "projectRootPath cannot be blank.")
     var projectRootPath: String = ""
-    var applications: List<String> = listOf("")
+
+    @field:ValidNonBlankStringList(message = "applications cannot be blank.")
+    var applications: List<String> = emptyList()
 
     // 这里的 `getState()` 返回当前状态
     override fun getState(): DeploySettingsState = this

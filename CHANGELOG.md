@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-01-13
+
+### Added
+- Added configuration parameter validation feature.
+
 ## [1.0.2] - 2024-12-17
 
 ### Added
@@ -24,7 +29,8 @@
 
 - Implement deployment environment configuration and automated deployment functions
 
-[Unreleased]: https://github.com/prettycurious/stec-devops-client/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/prettycurious/stec-devops-client/commits/v1.0.0
-[1.0.1]: https://github.com/prettycurious/stec-devops-client/commits/v1.0.0
-[1.0.2]: https://github.com/prettycurious/stec-devops-client/commits/v1.0.0
+[Unreleased]: https://github.com/prettycurious/stec-devops-client/compare/1.0.2...HEAD
+[1.0.3]: https://github.com/prettycurious/stec-devops-client/compare/1.0.2...1.0.3
+[1.0.2]: https://github.com/prettycurious/stec-devops-client/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/prettycurious/stec-devops-client/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/prettycurious/stec-devops-client/releases/tag/1.0.0
