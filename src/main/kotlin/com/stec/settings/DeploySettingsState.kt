@@ -3,30 +3,79 @@ package com.stec.settings
 import com.intellij.openapi.components.*
 import com.stec.annotations.ValidNonBlankStringList
 import jakarta.validation.constraints.NotBlank
+import java.beans.PropertyChangeListener
+import java.beans.PropertyChangeSupport
 
 @State(name = "DeploySettingsState", storages = [Storage("DeploySettings.xml")])
 @Service
 class DeploySettingsState : PersistentStateComponent<DeploySettingsState> {
+
+    private val propertyChangeSupport = PropertyChangeSupport(this)
+
     @field:NotBlank(message = "host cannot be blank.")
     var host: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("host", oldValue, value)
+        }
 
     @field:NotBlank(message = "username cannot be blank.")
     var username: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("username", oldValue, value)
+        }
 
     @field:NotBlank(message = "password cannot be blank.")
     var password: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("password", oldValue, value)
+        }
 
     @field:NotBlank(message = "releasePath cannot be blank.")
     var releasePath: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("releasePath", oldValue, value)
+        }
 
     @field:NotBlank(message = "environment cannot be blank.")
     var environment: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("environment", oldValue, value)
+        }
 
     @field:NotBlank(message = "projectRootPath cannot be blank.")
     var projectRootPath: String = ""
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("projectRootPath", oldValue, value)
+        }
 
     @field:ValidNonBlankStringList(message = "applications cannot be blank.")
     var applications: List<String> = emptyList()
+        set(value) {
+            val oldValue = field
+            field = value
+            propertyChangeSupport.firePropertyChange("applications", oldValue, value)
+        }
+
+    // 用于添加监听器
+    fun addPropertyChangeListener(listener: PropertyChangeListener) {
+        propertyChangeSupport.addPropertyChangeListener(listener)
+    }
+
+    fun removePropertyChangeListener(listener: PropertyChangeListener) {
+        propertyChangeSupport.removePropertyChangeListener(listener)
+    }
 
     // 这里的 `getState()` 返回当前状态
     override fun getState(): DeploySettingsState = this

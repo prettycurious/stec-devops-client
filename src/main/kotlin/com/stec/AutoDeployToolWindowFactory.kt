@@ -9,13 +9,17 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
-import com.stec.validator.DeployConfigValidator
 import com.stec.settings.DeploySettingsState
+import com.stec.validator.DeployConfigValidator
 import javax.swing.JButton
+import javax.swing.JLabel
 
 class AutoDeployToolWindowFactory : ToolWindowFactory {
     private val deployButton = JButton("Deploy")
     private val clearButton = JButton("Clear Console") // 手动清除按钮
+    private lateinit var hostLabel: JLabel
+    private lateinit var environmentLabel: JLabel
+    private lateinit var applicationsLabel: JLabel
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val settings = DeploySettingsState.getInstance()
@@ -26,10 +30,15 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
         // 配置控制台视图
         consoleView.print("Initializing...\n", ConsoleViewContentType.NORMAL_OUTPUT)
 
+        // 初始化工具窗口 UI 组件
+        hostLabel = JLabel(settings.host)
+        environmentLabel = JLabel(settings.environment)
+        applicationsLabel = JLabel(settings.applications.joinToString(", "))
         // 创建并配置布局
         val mainPanel = panel {
-            row("Host:") { label(settings.host) }
-            row("Environment:") { label(settings.environment) }
+            row("Host:") { cell(hostLabel) }
+            row("Environment:") { cell(environmentLabel) }
+            row("Applications:") { cell(applicationsLabel) }
             row {
                 cell(deployButton)
                     .align(Align.CENTER) // 使用新版对齐方式
@@ -67,6 +76,18 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
         // 将内容添加到 Tool Window
         val content = toolWindow.contentManager.factory.createContent(mainPanel, "", false)
         toolWindow.contentManager.addContent(content)
+
+        // 监听配置变化并更新 UI
+        settings.addPropertyChangeListener { event ->
+            // 检查属性变化并更新相应的组件
+            when (event.propertyName) {
+                "host" -> hostLabel.text = event.newValue as String
+                "environment" -> environmentLabel.text = event.newValue as String
+                "applications" -> applicationsLabel.text =
+                    (event.newValue as List<*>).joinToString(", ") // 更新 applications
+                // 其他字段变化可以在这里添加
+            }
+        }
     }
 
     private fun startDeployment(settings: DeploySettingsState, consoleView: ConsoleView) {
