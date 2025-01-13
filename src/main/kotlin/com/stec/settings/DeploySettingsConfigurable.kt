@@ -1,12 +1,13 @@
 package com.stec.settings
 
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.panel
 import javax.swing.JComponent
 
-class DeploySettingsConfigurable : Configurable {
-    private val settings = DeploySettingsState.getInstance()
+class DeploySettingsConfigurable(project: Project) : Configurable {
+    private val settings = DeploySettingsState.getInstance(project)
     private val hostField = JBTextField(settings.host)
     private val usernameField = JBTextField(settings.username)
     private val passwordField = JBTextField(settings.password)

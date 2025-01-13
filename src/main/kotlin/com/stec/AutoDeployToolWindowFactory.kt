@@ -22,7 +22,7 @@ class AutoDeployToolWindowFactory : ToolWindowFactory {
     private lateinit var applicationsLabel: JLabel
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val settings = DeploySettingsState.getInstance()
+        val settings = DeploySettingsState.getInstance(project)
 
         // 创建 ConsoleView，用于显示日志
         val consoleView: ConsoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).console

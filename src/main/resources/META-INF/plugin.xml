@@ -24,7 +24,7 @@
         <toolWindow id="Auto Deploy"
                     anchor="bottom"
                     factoryClass="com.stec.AutoDeployToolWindowFactory" />
-        <applicationConfigurable instance="com.stec.settings.DeploySettingsConfigurable" />
+        <projectConfigurable instance="com.stec.settings.DeploySettingsConfigurable" />
     </extensions>
 
     <actions>

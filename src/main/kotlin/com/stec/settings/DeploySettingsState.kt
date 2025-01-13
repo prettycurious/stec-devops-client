@@ -1,13 +1,17 @@
 package com.stec.settings
 
-import com.intellij.openapi.components.*
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.Project
 import com.stec.annotations.ValidNonBlankStringList
 import jakarta.validation.constraints.NotBlank
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 
 @State(name = "DeploySettingsState", storages = [Storage("DeploySettings.xml")])
-@Service
+@Service(Service.Level.PROJECT)
 class DeploySettingsState : PersistentStateComponent<DeploySettingsState> {
 
     private val propertyChangeSupport = PropertyChangeSupport(this)
@@ -93,6 +97,8 @@ class DeploySettingsState : PersistentStateComponent<DeploySettingsState> {
 
     // 提供一个静态方法来获取服务的实例
     companion object {
-        fun getInstance(): DeploySettingsState = service()
+        fun getInstance(project: Project): DeploySettingsState {
+            return project.getService(DeploySettingsState::class.java)
+        }
     }
 }
